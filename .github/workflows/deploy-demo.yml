@@ -1,0 +1,82 @@
+name: Deploy demo (license-server + payment aggregator) via ngrok
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-demo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies (license-server)
+        working-directory: license-server
+        run: npm ci
+
+      - name: Install dependencies (payment)
+        working-directory: payment
+        run: npm ci
+
+      - name: Start license-server
+        working-directory: license-server
+        run: |
+          nohup node server.js > ../license-server.log 2>&1 &
+          echo "license-server started"
+
+      - name: Start payment aggregator
+        working-directory: payment
+        run: |
+          nohup node aggregator.js > ../payment.log 2>&1 &
+          echo "payment aggregator started"
+
+      - name: Install unzip and curl
+        run: sudo apt-get update && sudo apt-get install -y unzip curl
+
+      - name: Download ngrok
+        run: |
+          curl -sSL -o ngrok.zip https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+          unzip ngrok.zip
+          chmod +x ngrok
+
+      - name: Configure ngrok auth (requires NGROK_AUTH_TOKEN secret)
+        env:
+          NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+        run: |
+          if [ -z "$NGROK_AUTH_TOKEN" ]; then
+            echo "NGROK_AUTH_TOKEN not set. Please add it to repository secrets and re-run the workflow." && exit 1
+          fi
+          ./ngrok authtoken "$NGROK_AUTH_TOKEN"
+
+      - name: Start ngrok tunnels for license-server (4000) and payment (3003)
+        run: |
+          ./ngrok http 4000 --log=stdout >/tmp/ngrok-4000.log 2>&1 &
+          ./ngrok http 3003 --log=stdout >/tmp/ngrok-3003.log 2>&1 &
+          sleep 6
+
+      - name: Show ngrok tunnels
+        run: |
+          echo "Ngrok tunnels (raw):"
+          curl --silent http://127.0.0.1:4040/api/tunnels || true
+
+      - name: Output demo URLs
+        id: urls
+        run: |
+          TUNNELS_JSON=$(curl --silent http://127.0.0.1:4040/api/tunnels || echo "{}")
+          echo "tunnels=$TUNNELS_JSON" >> $GITHUB_OUTPUT
+
+      - name: Print logs (license-server & payment)
+        run: |
+          echo '--- license-server log ---'
+          tail -n 200 ../license-server.log || true
+          echo '--- payment log ---'
+          tail -n 200 ../payment.log || true
+
+      - name: Final note
+        run: |
+          echo "Workflow finished. Check the 'Show ngrok tunnels' step output for public URLs to license-server and payment aggregator."
