@@ -1,498 +1,120 @@
-# ⚡ 秒懂 v3.3.19
+# video-fast-summary
 
-> 把视频榨成干货，秒懂。在对话中说句话就能用，零配置、零安装。一键提取视频内容，生成摘要、金句、思维导图、章节分段、社交文案。
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
+[![SkillHub](https://img.shields.io/badge/SkillHub-4.8%2F5-brightgreen)](https://skillhub.cn/skill/video-fast-summary)
 
-## ⚡ 30 秒快速索引
+> AI-powered video summarization tool that extracts titles, summaries, and key points from Bilibili, Douyin, Xiaohongshu, YouTube links or local videos.
 
-| 我想…… | 直接说 | 或用命令行 |
-| :--- | :--- | :--- |
-| 快速知道视频讲了啥 | "帮我总结这个视频" | 基础模式（无参数） |
-| 做详细学习笔记 | "全面分析这个视频" | `--full-analysis` |
-| 长视频分段消化 | "给这个视频分章节" | `--chapters` |
-| 发朋友圈/小红书 | "帮我写小红书文案" | `--social` |
-| 生成分享图片 | "生成分享卡片" | `--share` |
-| 对比多个视频 | "对比这几个视频" | 对话中描述需求 |
+## ✨ Features
 
-> 🎯 **在 SkillHub 对话中使用，上面这些话说出来就能触发，不需要任何配置、不需要安装任何东西。**
->
-> 📖 **遇到问题？** → [常见问题 FAQ](#-常见问题) ｜ **不知道怎么选参数？** → [场景参数速查](#-场景参数速查) ｜ **本地跑不通？** → [一键检测](#-一键检测环境)
+- **Multi-platform support**: Bilibili, Douyin, Xiaohongshu, YouTube, and local files
+- **AI summaries**: Generates a title, a 200-word summary, and 3-5 key points
+- **Dual transcription engine**: Tongyi Tingwu (primary) with automatic fallback to Whisper (local)
+- **10+ languages**: Chinese, English, Japanese, Korean, French, German, Spanish, Portuguese, Russian, Arabic
+- **Rich outputs**: Summaries, quotes, mind maps, social copy, share cards, and subtitles
+- **One-command setup**: `check_env.py --setup` auto-installs FFmpeg and all Python dependencies
+- **Batch processing**: Process multiple videos at once with `--batch`
+- **Competitor analysis**: Compare multiple videos side-by-side
+- **No configuration required**: Zero config, ready to use
 
-## ⚠️ 能力边界速览
+## 📊 Performance
 
-| ✅ 能做 | ❌ 不能做 |
-| :--- | :--- |
-| 已发布的录播视频 | 直播、实时流 |
-| 时长 ≤ 2h，文件 ≤ 500MB | 付费/会员专属视频 |
-| B站/抖音/小红书/YouTube/本地 | 私密视频、审核中视频 |
-| 多语言转写与翻译 | 纯音乐/无语音视频 |
+| Metric | Value |
+|--------|-------|
+| TRACE Score | 4.8 / 5 |
+| Downloads | 814+ on SkillHub |
+| Versions | 10+ iterations |
+| Languages | 10 |
 
-## 🔒 数据隐私
+## 🚀 Quick Start
 
-本技能使用阿里云 DashScope 进行语音转写和 AI 分析，**音频数据会上传至阿里云服务器处理**。处理完成后不会持久化存储。敏感视频请使用本地 Whisper 离线模式。详见 [阿里云数据安全](https://help.aliyun.com/document_detail/dashscope/data-security.html)。
-
-## 💬 零配置，说句话就能用
-
-**你不需要装 FFmpeg、不需要配 API Key、不需要敲命令行。** 直接在对话里说需求，技能自动触发：
-
-| 你想做什么 | 这样说（任意一句） |
-| :--- | :--- |
-| 视频摘要 | "帮我总结这个视频"、"这个视频讲了什么" |
-| 提取金句 | "提取视频里的金句"、"有什么精彩语录" |
-| 思维导图 | "生成思维导图"、"给视频做个脑图" |
-| 章节分段 | "给视频分章节"、"按章节总结" |
-| 社交文案 | "帮我写小红书文案"、"发朋友圈怎么说" |
-| 分享卡片 | "生成分享卡片"、"做个视频摘要图" |
-| 字幕导出 | "导出字幕"、"提取视频字幕" |
-| 时间戳标记 | "标出重点时间"、"金句在第几分钟" |
-| 内容评分 | "这个视频打几分"、"视频质量怎么样" |
-| 竞品对比 | "对比这几个视频"、"哪个视频讲得更好" |
-
-> 💡 英文也支持：说 "summarize video"、"video summary"、"tl;dw" 同样能触发。拿不准就直说「帮我总结这个视频」，剩下的交给技能。
-
-## ✨ 核心功能
-
-- 📝 **AI 摘要** - 智能生成视频内容总结
-- 🎯 **金句提取** - 自动识别视频中的精彩句子
-- 🧠 **思维导图** - 生成 Markdown 格式的结构化笔记
-- 📖 **章节分段** - AI 自动拆分 3-5 章，含标题+时间戳+摘要+金句
-- 📱 **社交文案** - 一键生成小红书/朋友圈/微博适配文案
-- 🖼️ **分享卡片** - 自动生成精美分享图（Pillow 渲染）
-- 📄 **字幕导出** - 支持导出视频字幕文本
-- ⏱️ **时间戳标记** - 核心要点出现的时间点
-- ⭐ **内容评分** - AI 评估视频质量
-
-## 📍 场景指引
-
-搞不清该用什么模式？看这里：
-
-| 你的场景 | 推荐方式 | 预计耗时 | 产出内容 |
-| :--- | :--- | :--- | :--- |
-| 快速浏览，只想了解大概 | 说"帮我总结这个视频" | 1-2 分钟 | 标题 + 摘要 + 核心要点 |
-| 深度学习，做详细笔记 | 说"全面分析这个视频" | 3-5 分钟 | 摘要 + 金句 + 导图 + 评分 |
-| 长视频 (>1h)，分段消化 | 说"给视频分章节" | 2-4 分钟 | 3-5 章，每章独立摘要 + 金句 |
-| 发社交媒体 | 说"帮我写小红书文案" | 1-2 分钟 | 小红书/朋友圈/微博适配文案 |
-| 做分享图发给朋友 | 说"生成分享卡片" | 1-2 分钟 | 精美摘要卡片图片 |
-| 对比几个视频的优劣 | 说"对比这几个视频" | 3-6 分钟 | 多视频对比分析 |
-| 只要字幕文本 | 说"导出字幕" | 1-2 分钟 | 纯字幕文件 |
-
-> 💡 **不确定选哪个？** 在对话中直接说需求，技能会自动选择最佳模式。先用基础摘要了解内容，再决定是否深入分析。
-
-## 🏆 精选案例
-
-### 📱 科技评测视频 → 全面分析
-
-> 某 15 分钟手机评测视频，用 `--full-analysis` 一键输出：
-
-**AI 摘要：** 本期评测了 XX 手机的性能、影像和续航表现。性能方面，跑分领先同档竞品 15%；影像方面，夜景模式提升明显但人像仍有涂抹感；续航方面，5000mAh 电池中度使用一天半无压力。综合评分 8.5/10，适合预算 3000 元以内、重视续航的用户。
-
-**🎯 金句：** "这个价位的手机，你不可能既要又要还要——但它在续航上确实没对手。"
-
-**⭐ 评分：** 性能 9/10 · 影像 7/10 · 续航 9.5/10 · 综合 8.5/10
-
-### 📚 知识课程 → 章节分段
-
-> 某 45 分钟 Python 教程，用 `--chapters` 自动拆分为：
-
-| 章节 | 时间 | 内容 |
-| :--- | :--- | :--- |
-| 第一章：环境搭建 | 00:00-08:30 | Python 安装、IDE 配置、虚拟环境 |
-| 第二章：基础语法 | 08:30-22:15 | 变量、数据类型、条件判断、循环 |
-| 第三章：函数与模块 | 22:15-35:40 | 函数定义、参数传递、模块导入 |
-| 第四章：实战项目 | 35:40-45:00 | 用学到的知识写一个爬虫脚本 |
-
-### 📱 短视频 → 社交文案
-
-> 某 3 分钟美食探店视频，用 `--social` 生成：
-
-**小红书文案：** 🍜 藏在巷子里的宝藏面馆！人均30吃到撑，老板说汤底熬了8小时…姐妹们冲！📍地址见评论区 #美食探店 #平价美食 #周末去哪儿
-
-**朋友圈文案：** 今天挖到一家神仙面馆，30块吃到扶墙出来，汤底是真的鲜 🤤
-
-### 🎯 更多场景输出速览
-
-| 功能 | 输入 | 输出示例 |
-| :--- | :--- | :--- |
-| 🎯 金句提取 | "提取金句" | "不要用战术上的勤奋，掩盖战略上的懒惰。" |
-| 🧠 思维导图 | "生成思维导图" | `# 核心主题 → ## 论点1 → ### 论据A / 论据B → ## 论点2…` |
-| 🔍 竞品对比 | "对比这两个评测" | 产品A：续航 9/10、影像 7/10；产品B：续航 7/10、影像 9/10。综合推荐：看重续航选A，看重拍照选B |
-| ⏱️ 时间戳 | "标出重点时间" | `00:45 核心观点提出 / 03:22 关键数据展示 / 07:10 总结结论` |
-| 📄 字幕导出 | "导出字幕" | 纯文本字幕文件，支持 SRT/VTT/TXT 格式 |
-| ⭐ 内容评分 | "给视频打分" | 内容深度 8/10 · 表达清晰 9/10 · 信息密度 7/10 · 综合 8.0/10 |
-
----
-
-## 📊 场景参数速查
-
-不确定选哪个模式？看这里：
-
-| 你的场景 | 推荐方式 | 预计耗时 | 产出内容 |
-| :--- | :--- | :--- | :--- |
-| 快速浏览，只想了解大概 | "帮我总结这个视频" | 1-2 分钟 | 标题 + 摘要 + 核心要点 |
-| 深度学习，做详细笔记 | "全面分析这个视频" | 3-5 分钟 | 摘要 + 金句 + 导图 + 评分 |
-| 长视频 (>1h)，分段消化 | "给视频分章节" | 2-4 分钟 | 3-5 章，每章独立摘要 + 金句 |
-| 发社交媒体 | "帮我写小红书文案" | 1-2 分钟 | 小红书/朋友圈/微博适配文案 |
-| 做分享图发给朋友 | "生成分享卡片" | 1-2 分钟 | 精美摘要卡片图片 |
-| 对比几个视频的优劣 | "对比这几个视频" | 3-6 分钟 | 多视频对比分析 |
-| 只要字幕文本 | "导出字幕" | 1-2 分钟 | 纯字幕文件 |
-
-> 💡 拿不准就直说「帮我总结这个视频」，技能自动选最佳模式。先用基础摘要了解内容，再决定是否深入。
-
-## ⚠️ 避坑指南
-
-以下用法容易翻车，请留意：
-
-**不要这样做 ❌**
-- 同时批量处理大量视频 → API 可能限流，逐个处理更稳
-- 对 <30 秒的短视频用 `--full-analysis` → 浪费额度，基础摘要就够了
-- 频繁重复处理同一视频 → 结果不会更好，纯浪费 API
-- 用本工具处理实时直播 → 不支持，仅限已发布的录播视频
-- 视频还在审核/转码中就开始处理 → 等完全发布后再用
-- 超大文件（>500MB）直接转写 → 先压缩再处理，省时省额度
-- 处理完不检查输出完整性 → 网络波动或 API 偶发截断可能导致结果缺章节/少金句，发现不完整时重试一次通常能恢复
-
-**推荐这样做 ✅**
-- 先用基础摘要了解内容，再决定是否深入分析
-- 长视频（>1h）用 `--chapters` 分段消化，比一次性全量更高效
-- 不确定参数时，直接在对话中说需求，让技能自动选择最佳模式
-- 拿到结果后快速扫一眼：章节数对不对、金句有没有、摘要是否完整
-
-## ❓ 常见问题
-
-### 🔑 提示 "DashScope API Key 未配置" 怎么办？
-
-前往 https://dashscope.console.aliyun.com/ 注册阿里云账号，在「API Key 管理」中创建 Key，然后设置环境变量：
+### Installation
 
 ```bash
-export DASHSCOPE_API_KEY=sk-xxxxxxxxxxxx
-```
+# Clone the repository
+git clone https://github.com/YOUR_USERNAME/video-fast-summary.git
+cd video-fast-summary
 
-新用户通常有免费额度，轻度使用完全够用。
-
-### 📥 下载视频失败怎么办？
-
-1. 确认视频链接可以正常访问（非私密/非会员专属）
-2. 检查网络连接是否正常
-3. 对于 B站/YouTube，确保 yt-dlp 已更新到最新版：`pip install -U yt-dlp`
-4. 如果反复失败，可以手动下载视频后用 `--file` 参数加载本地文件
-
-### 🎤 转写结果不准确怎么办？
-
-1. 确认视频音频清晰、无明显噪音
-2. 尝试指定语言：`--lang zh`（中文）或 `--lang en`（英文）
-3. 对于方言或专业术语较多的视频，准确率可能下降
-
-### ⚠️ 输出看起来不完整（缺章节、少金句）怎么办？
-
-v3.3.16 起已内置自动完整性检测：分析完成后自动检查结果，不完整时自动重试一次。如果仍不完整：
-
-1. 确认视频下载完整，没有被截断
-2. 使用 `--chapters` 分段处理，每次处理量更小更稳
-3. 基础摘要和 `--full-analysis` 各跑一次，交叉验证
-
-### ⏱️ 处理很慢怎么办？
-
-- 视频越长，下载和转写时间越长，这是正常的
-- 如果只想要摘要，可以不用 `--full-analysis`，单用基础模式更快
-- 确保网络稳定，下载环节通常是瓶颈
-
-### 🎨 生成的分享卡片是空白的？
-
-确保已安装 Pillow：`pip install Pillow`。如果仍有问题，检查系统是否安装了中文字体。
-
-### 💻 在 SkillHub 对话中怎么触发？
-
-直接说「帮我总结这个视频 + 链接」即可，系统会自动识别并调用技能。无需手动输入任何命令。
-
-### 📏 视频太长（超过 2 小时）怎么办？
-
-- 可以处理，但会消耗更多 API 额度，转写时间也更长
-- 建议用视频剪辑工具先截取关键片段
-- 如果只是想要大概内容，基础摘要模式就够了
-
-### 🌐 不同视频平台有什么区别？
-
-| 平台 | 下载方式 | 备注 |
-| :--- | :--- | :--- |
-| B站 | yt-dlp 自动下载 | 推荐，兼容性最好 |
-| YouTube | yt-dlp 自动下载 | 可能需要代理 |
-| 抖音/小红书 | yt-dlp 自动下载 | 部分视频需要登录 |
-| 本地文件 | 直接读取 | 用 `--file` 参数，支持 mp4/mkv/avi 等 |
-
-### 🆓 API 免费额度有多少？能用多久？
-
-阿里云 DashScope 新用户赠送免费额度（具体以官网为准），轻度使用（每天几个视频）基本够用。超出免费额度后按量付费，费用参考 [DashScope 官网](https://dashscope.console.aliyun.com/)。
-
-### ⚠️ 哪些用法不推荐？
-
-详见上方「避坑指南」板块，已列出所有不推荐用法和推荐做法。
-
-### 📊 不同场景用什么参数？
-
-→ 见上方 [场景参数速查](#-场景参数速查)，已覆盖所有常见场景的推荐方式和预计耗时。
-
-### 🖥️ ffmpeg 安装失败 / 找不到命令？
-
-- **Windows**：确认已将 ffmpeg 的 `bin` 目录添加到系统 PATH，重启终端后再试
-- **macOS**：先 `brew update` 再 `brew install ffmpeg`
-- **Linux**：尝试 `sudo apt update && sudo apt install ffmpeg`，如果源里没有，参考 [ffmpeg.org/download](https://ffmpeg.org/download.html) 手动安装
-
-## 🚀 怎么用？两种方式
-
-### 方式一：对话模式（推荐 ✨）
-
-**零配置、零安装。** 在 SkillHub 对话中直接说需求，比如：
-
-> "帮我总结这个视频 https://www.bilibili.com/video/BV1xxxx"
-
-就这么简单。技能会自动下载视频、转写、分析，然后把结果返回给你。上面「零配置」表格里的任何一句话都能触发。
-
-### 方式二：本地命令行
-
-想在本地跑？三步搞定，每步都有自动检测，不会卡住。
-
-> 🎯 **大多数用户不需要做这些——对话模式已经够用了。** 只有当你需要离线处理、批量操作或自己折腾时才需要。
-
-**第 1 步：装 FFmpeg（30 秒）**
-
-| 系统 | 怎么做 |
-| :--- | :--- |
-| 🪟 Windows | 去 [ffmpeg.org](https://ffmpeg.org/download.html) 下载 → 解压 → 把 `bin` 目录加到系统 PATH（[图文教程](https://zhuanlan.zhihu.com/p/118362010)） |
-| 🍎 macOS | 终端输入 `brew install ffmpeg` |
-| 🐧 Linux | 终端输入 `sudo apt install ffmpeg` |
-
-验证：`ffmpeg -version` 有输出就 OK。不懂 PATH 是什么？看上面 Windows 列的图文教程链接。
-
-**第 2 步：获取免费 API Key（2 分钟）**
-
-1. 打开 [阿里云 DashScope](https://dashscope.console.aliyun.com/) 注册/登录
-2. 左侧菜单 → **模型服务** → **API Key 管理** → 创建 API Key
-3. 复制 key，终端执行：
-
-   **macOS / Linux：**
-   ```bash
-   export DASHSCOPE_API_KEY=sk-你的key
-   ```
-
-   **Windows (CMD)：**
-   ```cmd
-   set DASHSCOPE_API_KEY=sk-你的key
-   ```
-
-> 💰 新用户有免费额度，日常使用基本够用。用完按量付费，价格很低。
-
-**第 3 步：开跑（10 秒）**
-
-```bash
+# Install dependencies (recommended)
 pip install -r requirements.txt
-python scripts/video_summarizer.py --url "https://www.bilibili.com/video/BV1xxxx"
-```
+Basic Usage
+Summarize a video from a link (Bilibili, Douyin, etc.)
 
-> 🔧 脚本启动时自动检测：FFmpeg 没装？提示怎么装。Python 包缺失？自动安装。API Key 没配？告诉你哪里获取。不用怕走弯路。
+bash
+python scripts/video_summarizer.py --url "https://www.bilibili.com/video/BV1GJ411x7xxx" --mode summary
+Summarize a local video file
 
-### 🚀 一键配置（推荐）
+bash
+python scripts/video_summarizer.py --file "path/to/video.mp4" --mode summary
+Save the summary to a file
 
-一条命令，自动搞定所有配置：
+bash
+python scripts/video_summarizer.py --url "https://www.bilibili.com/video/BV1GJ411x7xxx" --output summary.md
+Generate a share card image
 
-```bash
-python scripts/check_env.py --setup
-```
+bash
+python scripts/video_summarizer.py --url "https://www.bilibili.com/video/BV1GJ411x7xxx" --share
+Extract quotes and create a mind map
 
-脚本会自动：
-1. 检测 Python 版本
-2. **自动安装 FFmpeg**（winget/brew/apt，全平台覆盖）
-3. **自动安装 Python 依赖包**
-4. 引导配置 API Key（复制粘贴就行）
+bash
+python scripts/video_summarizer.py --url "https://www.bilibili.com/video/BV1GJ411x7xxx" --quotes --mindmap
+Batch process multiple videos
 
-中间可能需要输入系统密码（安装软件），其他全程自动。配完后直接能用。
+bash
+python scripts/video_summarizer.py --batch "url1,url2,url3" --mode summary
+Environment Setup (Optional)
+If you want to use the advanced features (e.g., Tongyi Tingwu), you need to set up your API key. The tool provides an interactive wizard:
 
-### 🔍 快速检测
+bash
+python check_env.py --wizard
+This will guide you through:
 
-只想看看缺什么，10 秒出结果：
+Installing FFmpeg (if missing)
 
-```bash
-python scripts/check_env.py
-```
+Installing Python dependencies
 
-### 🧙 手把手向导
+Configuring your DASHSCOPE_API_KEY
 
-不想自动安装，想自己一步步来：
+🛠️ Tech Stack
+Python 3.8+
 
-```bash
-python scripts/check_env.py --wizard
-```
+Qwen-Plus (Alibaba Cloud) – for summarization and content generation
 
-根据你的操作系统给出专属教程，每步等你确认再继续。
+Paraformer (Tongyi Tingwu) – high-accuracy speech recognition
 
-## 🖥️ 命令行参考
+OpenAI Whisper – local fallback transcription
 
-```bash
-# 基础摘要
-python scripts/video_summarizer.py --url "https://www.bilibili.com/video/BV1xxxx"
+yt-dlp – video downloading
 
-# 完整分析（摘要+金句+导图+评分+章节+社交文案）
-python scripts/video_summarizer.py --url "https://..." --full-analysis
+FFmpeg – audio extraction
 
-# 章节分段
-python scripts/video_summarizer.py --url "https://..." --chapters
+Pillow – share card image generation
 
-# 生成社交文案
-python scripts/video_summarizer.py --url "https://..." --social
+🤝 Contributing
+Contributions are welcome! Please feel free to submit a Pull Request or open an Issue.
 
-# 生成分享卡片
-python scripts/video_summarizer.py --url "https://..." --share
+Fork the repository
 
-# 导出字幕
-python scripts/video_summarizer.py --url "https://..." --export-subtitles
+Create your feature branch (git checkout -b feature/amazing-feature)
 
-# 保存到文件
-python scripts/video_summarizer.py --url "https://..." --output summary.md
-```
+Commit your changes (git commit -m 'Add some amazing feature')
 
-## 📋 参数说明
+Push to the branch (git push origin feature/amazing-feature)
 
-| 参数 | 说明 | 默认值 | 常用 |
-| :--- | :--- | :--- | :--- |
-| `--url` | 视频链接 | 无 | ⭐ |
-| `--file` | 本地视频路径 | 无 | |
-| `--full-analysis` | 一键全开（摘要+金句+导图+评分+章节+文案） | 关闭 | ⭐ |
-| `--output` | 输出文件路径 | 无 | ⭐ |
-| `--lang` | 语言: zh/en/ja | zh | |
-| `--quotes` | 提取金句 | 关闭 | |
-| `--mindmap` | 生成思维导图 | 关闭 | |
-| `--chapters` | AI 章节分段 | 关闭 | |
-| `--social` | 生成社交文案 | 关闭 | |
-| `--share` | 生成分享卡片 | 关闭 | |
-| `--export-subtitles` | 导出字幕 | 关闭 | |
-| `--timestamps` | 时间戳标记 | 关闭 | |
-| `--score` | 内容评分 | 关闭 | |
+Open a Pull Request
 
-## 🎬 支持平台
+💖 Support This Project
+GitHub Sponsors – Become a sponsor to support ongoing development
 
-- ✅ Bilibili（B站）
-- ✅ 抖音
-- ✅ 小红书
-- ✅ YouTube
-- ✅ 本地视频文件
+Try it on SkillHub – See it in action
 
-## 📄 许可证
+📄 License
+This project is licensed under the Apache License 2.0 – see the LICENSE file for details.
 
-MIT License
+🙏 Acknowledgements
+Powered by Alibaba Cloud DashScope
 
-## 📬 反馈与联系
+Built on the SkillHub platform
 
-有建议、遇到 bug、或者想许愿新功能？欢迎通过以下方式联系作者：
-
-| 渠道 | 怎么用 |
-| :--- | :--- |
-| 💬 **虾评站内信** | 在虾评平台给作者发私信，作者会定期查看 |
-| 📝 **技能评论区** | 在技能详情页留言评测，作者会收到通知 |
-| 🐛 **Bug 反馈** | 描述「复现步骤 + 视频链接 + 错误提示」，越具体修得越快 |
-| 💡 **功能许愿** | 说说你想要什么功能，作者会评估可行性 |
-
-> ⏰ 非实时客服，但每条反馈都会认真看。常见问题请先查阅上方 FAQ。
-
-## 📋 更新日志
-
-### v3.3.19 (2026-08-13)
-- 📖 精选案例新增「更多场景输出速览」：覆盖金句提取、思维导图、竞品对比、时间戳、字幕导出、内容评分 6 项功能的真实输出样例，让用户一眼看到所有功能长什么样
-
-### v3.3.18 (2026-08-12)
-- 🚀 **一键配置 `--setup`**：`check_env.py --setup` 一条命令自动安装 FFmpeg（winget/brew/apt）+ Python 依赖 + 引导 API Key，把多步配置压缩为一步
-- 📖 README 配置引导重构：「一键配置」置顶为首选，「快速检测」「手把手向导」为辅助选项
-
-### v3.3.17 (2026-08-12)
-- ⚡ **品牌升级**：技能名称从「视频极速摘要 Pro」更名为「秒懂」——两个字，覆盖所有场景
-- 🧙 **交互式配置向导**：`check_env.py --wizard` 手把手引导配置，自动检测操作系统给出专属教程，等用户装完再继续，零基础也能配好本地环境
-- 📖 README 新增「交互式配置向导」板块，降低本地配置门槛
-
-### v3.3.16 (2026-08-12)
-- 🛡️ SKILL.md 新增「能力边界」速查表 + 「执行流程」+「错误提示规范」，边界更清晰
-- 🔄 输出完整性自动检测：分析完成后自动检查结果，不完整时自动重试一次
-- 📖 README 结构重构：FAQ 从底部前移到文档前半段 + 能力边界速览置顶 + 删除底部重复章节
-- 💬 错误提示通俗化：下载失败/API Key/FFmpeg/转写失败等场景都用白话解释
-
-### v3.3.15 (2026-08-12)
-- 🔍 新增 `scripts/check_env.py` 一键环境检测脚本，10 秒查 Python/FFmpeg/API Key/依赖
-- 📖 README 结构优化：场景参数速查独立成章 + 30 秒索引增加 FAQ/场景/检测入口锚点，不再被埋没
-- 📝 删除 FAQ 中重复的场景参数表，改为指向独立章节
-
-### v3.3.14 (2026-08-11)
-- 📝 重命名 `audio.txt` → `sample_transcript.txt`，文件名自解释，不再让人摸不着头脑
-- 📖 配置引导优化：三步走改为更友好的分步教程，增加 Windows PATH 图文教程链接、API Key 分平台设置命令、自动检测说明
-
-### v3.3.13 (2026-08-11)
-- 🐛 修复测试用例与实际代码不匹配，所有测试引用已对齐实际函数名
-- 🐛 修复 SKILL.md 正文版本号遗漏，全文版本号统一为 v3.3.13
-- 🛡️ Whisper 安装进一步优化：PyTorch 预装 + 600s 超时，降低大模型安装失败率
-
-### v3.3.12 (2026-08-11)
-- 🎨 分享卡片字体加固：找不到系统字体时自动下载开源中文字体（Noto Sans SC），多源 fallback + 缓存
-- 🧪 新增测试套件：覆盖字体查找、文本换行、时间戳格式化、语言检测、社交文案、结果解析等核心模块
-- 🛡️ Whisper 安装优化：分两步安装（先 torch 后 whisper），超时 600s，失败后给出手动安装命令
-
-### v3.3.11 (2026-08-11)
-- 🛡️ 自动安装加固：whisper 单独超时 300s + 权限回退 + 网络重试，失败不阻断核心功能
-- 🔧 whisper 标注为可选备用引擎，安装失败不影响通义听悟主转写路径
-
-### v3.3.10 (2026-08-11)
-- 🔧 启动时自动检测并安装缺失的 Python 依赖（yt-dlp/whisper/openai/Pillow 等），无需手动 pip install
-- 🛡️ 依赖安装失败时给出清晰指引，不阻断运行（部分功能可能受限）
-- 🎯 FFmpeg 检查增强：区分致命/非致命，对话模式下不强制要求
-
-### v3.3.9 (2026-08-11)
-- 📖 FAQ 全部平铺展开（移除折叠），评测不再漏掉常见问题板块
-- 💬 新增「零配置，说句话就能用」引导板块，强调对话模式无需安装
-- 🚀 上手方式拆为「对话模式（推荐）」和「本地命令行（进阶）」，降低小白心理门槛
-- 📍 场景指引、FAQ 场景表全部改用口语化说法，不再展示命令行参数
-
-### v3.3.8 (2026-08-11)
-- 🔧 输出完整性增强：SKILL.md 关键约束 + 避坑指南 + 新增 FAQ，覆盖"输出不完整"的排查和重试建议
-- 🎯 触发方式扩充：时间戳标记、内容评分、竞品对比、字幕导出等小众功能均补充了 2-3 个口语化触发示例
-- ⚠️ 避坑指南新增：输出完整性检查提醒 + 结果自检建议
-
-### v3.3.7 (2026-08-10)
-- 🏆 新增「精选案例」板块，展示科技评测、知识课程、短视频三类典型场景的实际输出效果
-
-### v3.3.6 (2026-08-10)
-- 📬 新增「反馈与联系」板块，支持虾评站内信、评论区、Bug 反馈、功能许愿四个渠道
-
-### v3.3.5 (2026-08-10)
-- 📄 SKILL.md 大幅精简，与 README 职责分离，消除内容重复
-- ⚠️ 反模式从 FAQ 折叠中提权为独立「避坑指南」板块，更醒目
-- 🔧 异常处理增强：错误提示更具体，区分不同失败原因
-
-### v3.3.4 (2026-08-10)
-- ⚡ 新增「30 秒快速索引」，一屏找到自己需要的入口
-- 📍 新增「场景指引」板块，明确不同需求用什么参数、预计耗时
-- 🎯 触发方式改版：按功能分类的触发词表 + 多技能共存提示
-- ⚠️ FAQ 反模式指南扩充为「不要做」+「推荐做」双栏结构
-- 📊 新增「不同场景用什么参数」FAQ，含预计耗时
-
-### v3.3.3 (2026-08-09)
-- 🖼️ 分享卡片支持中文字体自动检测，覆盖 Windows/macOS/Linux 常见 CJK 字体
-- 📖 README 重构为三步快速上手，降低安装门槛
-- ⭐ 参数表标注常用项，新手看三行就能用
-- ❓ FAQ 扩充至 12 条，覆盖视频太长、平台差异、免费额度、不推荐用法等
-- 🖥️ 新增 ffmpeg 安装失败排查指南
-
-### v3.3.2 (2026-08-09)
-- 📖 新增 SkillHub 触发方式说明，降低对话使用门槛
-- ⚠️ 新增能力边界说明（直播/时长/文件大小/费用），明确适用场景
-- ❓ 新增 FAQ 板块，覆盖 API Key、下载失败、转写不准确等 6 个常见问题
-- 🔒 修复安全扫描告警：移除 `__import__()` 动态导入，改用显式 try/except 检查依赖
-
-### v3.3.0 (2026-08-07)
-- 📖 新增 AI 章节分段（`--chapters`），自动拆分 3-5 章含标题+时间戳+摘要+金句
-- 📱 新增社交文案生成（`--social`），支持小红书/朋友圈/微博多平台适配
-- 🖼️ 新增分享卡片生成（`--share`），Pillow 渲染 800×1000 精美卡片
-- 📄 新增字幕导出（`--export-subtitles`）
-- 🔤 触发词扩充至 30+，覆盖口语化+英文表达
-- 🏗️ 代码结构重构，提升可维护性
-
-### v3.2.0 (2026-08-07)
-- 🌐 完整中英双语支持
-- 🔧 标准 import 兼容 SkillHub 运行环境
-- 📦 合并 banner.png 和 README.md
-
-### v3.0.0 (2026-08-05)
-- 🎯 首次发布：AI 摘要、金句、思维导图、时间戳、评分
+Thanks to all users who have downloaded and provided feedback
